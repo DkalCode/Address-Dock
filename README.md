@@ -1,7 +1,6 @@
-
 <h1 id="readme-top" align="center">
   <br>
-  <a href="https://github.com/DkalCode/Address-Dock"><img src="https://i.ibb.co/PZWzNWZ0/3a11d91555b7e6c4b62dc2c2d9a2b4dd.png" alt="Forgination" width="200"></a>
+  <a href="https://github.com/DkalCode/Address-Dock"><img src="./docs/images/logo.png" alt="Forgination" width="200"></a>
   <br>
   Forgination - Address API
   <br>
@@ -35,15 +34,17 @@
 <h3 id="prerequisites">Prerequisites</h3>
 
 This project requires:
-* Node v20.13.1
+
+- Node v20.13.1
+
   ```sh
   nvm install v20.13.1
   ```
-  
+
   ```sh
   nvm use v20.13.1
   ```
- 
+
 <h3 id="installation">Installation</h3>
 
 1. Clone the repo
@@ -79,9 +80,9 @@ This project requires:
   POST /address/count
 ```
 
-| Body      | Type     | Description                    |
-| :-------- | :------- | :----------------------------- |
-| `See Body Reference` | `json` |  Either Zip Code or City Name  |
+| Body                 | Type   | Description                  |
+| :------------------- | :----- | :--------------------------- |
+| `See Body Reference` | `json` | Either Zip Code or City Name |
 
 #### Get details on an address
 
@@ -89,13 +90,14 @@ This project requires:
   POST /address/request
 ```
 
-| Body      | Type     | Description                    |
-| :-------- | :------- | :----------------------------- |
-| `See Body Reference` | `json` |  Either Zip Code or City Name  |
+| Body                 | Type   | Description                  |
+| :------------------- | :----- | :--------------------------- |
+| `See Body Reference` | `json` | Either Zip Code or City Name |
 
 #### Body Reference
 
 **Query by City:**
+
 ```json
 {
   "city": "Victor"
@@ -103,6 +105,7 @@ This project requires:
 ```
 
 **Query by Zip Code:**
+
 ```json
 {
   "zipcode": "14586"
@@ -113,10 +116,10 @@ This project requires:
 
 <h3 id="authors">Authors</h3>
 
-* David: [DkalCode](https://github.com/DkalCode)
-* Kieran: [Ksullivan87](https://github.com/Ksullivan87)
-* Kyle: [Kweishaar9](https://github.com/Kweishaar9)
-* Will: [OlympusCoding](https://github.com/OlympusCoding)
+- David: [DkalCode](https://github.com/DkalCode)
+- Kieran: [Ksullivan87](https://github.com/Ksullivan87)
+- Kyle: [Kweishaar9](https://github.com/Kweishaar9)
+- Will: [OlympusCoding](https://github.com/OlympusCoding)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -124,7 +127,7 @@ This project requires:
 
 <h3 id="acknowledgments">Acknowledgments</h3>
 
-* Template Author: [rocnick](https://github.com/rocnick)
+- Template Author: [rocnick](https://github.com/rocnick)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -155,6 +158,3 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
