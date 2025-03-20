@@ -14,9 +14,10 @@
   </p>
 
 <p align="center">
- <img alt="NPM Version" src="https://img.shields.io/npm/v/express?label=express">
- <img alt="NPM Version" src="https://img.shields.io/npm/v/typescript?label=typescript">
- <img alt="NPM Version" src="https://img.shields.io/npm/v/dotenv?label=dotenv&color=%238FAB44">
+ <img alt="Express Version" src="https://img.shields.io/npm/v/express?label=express">
+ <img alt="Typescript Version" src="https://img.shields.io/npm/v/typescript?label=typescript">
+ <img alt="Dotenv Version" src="https://img.shields.io/npm/v/dotenv?label=dotenv&color=%238FAB44">
+ <img alt="TeamCity Build Status" src="https://teamcity.hydnum.cloud/app/rest/builds/buildType:(id:ForginationAddressApi_Build)/statusIcon">
 </p>
 
 <!-- TABLE OF CONTENTS -->
