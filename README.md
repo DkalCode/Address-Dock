@@ -8,16 +8,15 @@
 
 <h5 align="center">A simple REST API for addresses within New York State</h5>
   <p align="center">
-<a href="https://api.forgination.com">View Demo</a>
+<a href="https://api.forgination.com">Production API</a>
     &middot;
-    <a href="https://docs.forgination.com">Explore the docs</a>
+    <img alt="TeamCity Build Status" src="https://teamcity.hydnum.cloud/app/rest/builds/buildType:(id:ForginationAddressApi_Build)/statusIcon">
   </p>
 
 <p align="center">
  <img alt="Express Version" src="https://img.shields.io/npm/v/express?label=express">
  <img alt="Typescript Version" src="https://img.shields.io/npm/v/typescript?label=typescript">
  <img alt="Dotenv Version" src="https://img.shields.io/npm/v/dotenv?label=dotenv&color=%238FAB44">
- <img alt="TeamCity Build Status" src="https://teamcity.hydnum.cloud/app/rest/builds/buildType:(id:ForginationAddressApi_Build)/statusIcon">
 </p>
 
 <!-- TABLE OF CONTENTS -->
