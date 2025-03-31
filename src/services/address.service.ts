@@ -15,10 +15,10 @@ class AddressService {
       }
 
       this.request(addressRequest)
-        .then((response) => {
+        .then((response: Array<Object>) => {
           resolve({
-            count: response.size(),
-          });
+                count: response.length,
+            });
         })
         .catch((err) => {
           reject(err);
