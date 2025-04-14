@@ -26,6 +26,32 @@ class AddressService {
     });
   }
 
+  public async city(cityRequest?: any): Promise<any> {
+    return new Promise<any>(async (resolve, reject) => {
+      if (!cityRequest) {
+        reject(NULL_ADDRESS_REQUEST_ERROR);
+        return;
+      }
+      fetch(AddressService.fetchUrl, {
+        method: "POST",
+        body: JSON.stringify(cityRequest.body),
+      })
+        .then(async (response) => {
+          let json = await response.json() as any;
+          resolve(json[0].city);
+        })
+        .catch((err) => {
+          loggerService
+            .error({
+              path: "/address/city",
+              message: `${(err as Error).message}`,
+            })
+            .flush();
+          reject(err);
+        });
+    });
+  }
+
   public async request(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       fetch(AddressService.fetchUrl, {
