@@ -103,27 +103,6 @@ class AddressEndpoint extends baseEndpoint {
           );
       });
   }
-
-  private distance_post(req: Request, res: Response, next: NextFunction) {
-    addressService
-      .distance(req)
-      .then((distances) => {
-        res
-          .status(200)
-          .send(
-            responseWrapper(RESPONSE_STATUS_OK, RESPONSE_EVENT_READ, { "Distance (KM)": distances[0], "Distance (MI)": distances[1] })
-          );
-      })
-      .catch((err) => {
-        res
-          .status(400)
-          .send(
-            responseWrapper(RESPONSE_STATUS_FAIL, RESPONSE_EVENT_READ, err)
-          );
-      });
-  }
-
-
 }
 
 
