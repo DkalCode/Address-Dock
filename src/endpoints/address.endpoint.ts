@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import baseEndpoint from "./base.endpoint";
 import addressService from "../services/address.service";
 import responseWrapper from "../services/response.service";
@@ -103,7 +103,32 @@ class AddressEndpoint extends baseEndpoint {
           );
       });
   }
+
+  private distance_post(req: Request, res: Response, next: NextFunction) {
+    addressService
+      .distance(req)
+      .then((distances) => {
+        res
+          .status(200)
+          .send(
+            responseWrapper(RESPONSE_STATUS_OK, RESPONSE_EVENT_READ, { "Distance (KM)": distances[0], "Distance (MI)": distances[1] })
+          );
+      })
+      .catch((err) => {
+        res
+          .status(400)
+          .send(
+            responseWrapper(RESPONSE_STATUS_FAIL, RESPONSE_EVENT_READ, err)
+          );
+      });
+  }
+
+
 }
+
+
+
+
 
 const addressEndpoint = new AddressEndpoint();
 
