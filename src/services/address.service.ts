@@ -5,7 +5,7 @@ export const NULL_ADDRESS_REQUEST_ERROR =
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
 
-  constructor() {}
+  constructor() { }
 
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
@@ -14,15 +14,41 @@ class AddressService {
         return;
       }
 
-      this.request(addressRequest)
-        .then((response) => {
-          resolve({
-            count: response.size(),
+      if (addressRequest.body.page != undefined) {
+        this.request(addressRequest)
+          .then((response: Array<Object>) => {
+            resolve(
+              {
+                count: response.length
+              }
+            )
+          })
+          .catch((err) => {
+            reject(err);
           });
-        })
-        .catch((err) => {
-          reject(err);
+      }
+      else {
+        let count = 0;
+        let page = 1;
+        let responseSize = 0;
+        do {
+          addressRequest.body.page = page;
+          await this.request(addressRequest)
+            .then((response) => {
+              responseSize = response.length;
+              count += response.length;
+              page++;
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        } while (responseSize > 0)
+
+        resolve({
+          count: count
         });
+
+      }
     });
   }
 
