@@ -1,7 +1,7 @@
 import loggerService from "./logger.service";
 
 export const NULL_ADDRESS_REQUEST_ERROR =
-  "You must provide an Address Request.";
+  "You must provide a valid Address Request.";
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
 
@@ -28,17 +28,21 @@ class AddressService {
 
   public async city(cityRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
-      if (!cityRequest) {
-        reject(NULL_ADDRESS_REQUEST_ERROR);
+      //console.log(cityRequest.body.zipcode.length);
+      if (!cityRequest || cityRequest.body.zipcode.length != 5) {
+        console.log(`Please provide a valid zipcode`);            //console for method specific handling
+        reject(NULL_ADDRESS_REQUEST_ERROR);                       //full reject for generic class handling
         return;
       }
+      console.log(`Fetching data`);
       fetch(AddressService.fetchUrl, {
         method: "POST",
         body: JSON.stringify(cityRequest.body),
       })
         .then(async (response) => {
           let json = await response.json() as any;
-          resolve(json[0].city);
+          //console.log(json);
+            resolve(json[0].city);
         })
         .catch((err) => {
           loggerService
