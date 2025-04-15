@@ -10,13 +10,13 @@ import {
 import imageService from "../services/image.service";
 
 class ImageEndpoint extends baseEndpoint {
-  public get(req: Request, res: Response, next: NextFunction) {
+  public post(req: Request, res: Response, next: NextFunction) {
     super.executeSubRoute(imageEndpoint, req, res, next);
   }
 
-  private image_get(req: Request, res: Response, next: NextFunction) {
+  private request_post(req: Request, res: Response, next: NextFunction) {
     imageService
-      .request(req.query)
+      .request(req)
       .then((response) => {
         fetch(response.url)
           .then((response) => response.blob())

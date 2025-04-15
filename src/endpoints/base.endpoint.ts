@@ -37,7 +37,7 @@ class BaseEndpoint {
     res: Response,
     next: NextFunction
   ) {
-    let subRoute = req.originalUrl.split("/")[1];
+    let subRoute = req.originalUrl.split("/")[2];
     subRoute = `${subRoute}_${req.method.toLowerCase()}`;
 
     const temp = endPointMethod[subRoute as keyof typeof endPointMethod];

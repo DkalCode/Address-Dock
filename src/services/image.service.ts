@@ -1,46 +1,57 @@
-import createHttpError from "http-errors";
 import { GOOGLE_API_TOKEN } from "../constants/environment-vars.constants";
-import { LOCATION_NOT_PROVIDED } from "../constants/errors.constants";
+import { QUERY_NOT_PROVIDED } from "../constants/errors.constants";
 import loggerService from "./logger.service";
+import addressService, { NULL_ADDRESS_REQUEST_ERROR } from "./address.service";
 
 class ImageService {
   private static fetchUrl = "https://maps.googleapis.com/maps/api/streetview";
 
   constructor() {}
 
-  public async request(imageParams?: any): Promise<any> {
+  public async request(request: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
-      if (!imageParams || !imageParams.location) {
-        reject(new createHttpError.BadRequest(LOCATION_NOT_PROVIDED));
+      if (Object.keys(request.body).length === 0) {
+        loggerService
+          .warning({ message: QUERY_NOT_PROVIDED, path: request.path })
+          .flush();
+        reject(new Error(QUERY_NOT_PROVIDED));
         return;
       }
 
-      try {
-        const params = new URLSearchParams({
-          key: GOOGLE_API_TOKEN,
-          location: imageParams.location,
-          size: imageParams.size || "500x500",
-        });
+      addressService
+        .exact(request)
+        .then((response) => {
+          try {
+            const params = new URLSearchParams({
+              key: GOOGLE_API_TOKEN,
+              location: response.formattedAddress,
+              size: "500x500",
+            });
 
-        fetch(ImageService.fetchUrl + `?${params}`, {
-          method: "GET",
-        })
-          .then(async (response) => {
-            resolve(response);
-          })
-          .catch((err) => {
-            loggerService
-              .error({
-                path: "/image/request",
-                message: `${(err as Error).message}`,
+            fetch(ImageService.fetchUrl + `?${params}`, {
+              method: "GET",
+            })
+              .then(async (response) => {
+                resolve(response);
               })
-              .flush();
+              .catch((err) => {
+                loggerService
+                  .error({
+                    path: "/image/request",
+                    message: `${(err as Error).message}`,
+                  })
+                  .flush();
+                reject(err);
+              });
+          } catch (err) {
             reject(err);
-          });
-      } catch (err) {
-        reject(new Error(LOCATION_NOT_PROVIDED));
-        return;
-      }
+            return;
+          }
+        })
+        .catch((err) => {
+          loggerService.warning({ message: err, path: request.path }).flush();
+          reject(err);
+        });
     });
   }
 }

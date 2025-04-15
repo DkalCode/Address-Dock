@@ -103,6 +103,25 @@ class AddressEndpoint extends baseEndpoint {
           );
       });
   }
+
+  private exact_post(req: Request, res: Response, next: NextFunction) {
+    addressService
+      .exact(req)
+      .then((response) => {
+        res
+          .status(200)
+          .send(
+            responseWrapper(RESPONSE_STATUS_OK, RESPONSE_EVENT_READ, response)
+          );
+      })
+      .catch((err) => {
+        res
+          .status(400)
+          .send(
+            responseWrapper(RESPONSE_STATUS_FAIL, RESPONSE_EVENT_READ, err)
+          );
+      });
+  }
 }
 
 const addressEndpoint = new AddressEndpoint();

@@ -1,7 +1,12 @@
+import { QUERY_MISSING_PARAMETERS } from "../constants/errors.constants";
+import { AddressResult } from "../types/types";
+import Validator from "../utility/validator.utility";
 import loggerService from "./logger.service";
 
-export const NULL_ADDRESS_REQUEST_ERROR =
-  "You must provide an Address Request.";
+export const NULL_ADDRESS_REQUEST_ERROR = "You must provide an Address Request";
+
+const ADDRESS_NOT_FOUND_ERROR = "Address not found";
+
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
 
@@ -10,15 +15,15 @@ class AddressService {
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       if (!addressRequest) {
-        reject(NULL_ADDRESS_REQUEST_ERROR);
+        reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
         return;
       }
 
       this.request(addressRequest)
         .then((response: Array<Object>) => {
           resolve({
-                count: response.length,
-            });
+            count: response.length,
+          });
         })
         .catch((err) => {
           reject(err);
@@ -43,6 +48,70 @@ class AddressService {
             })
             .flush();
           reject(err);
+        });
+    });
+  }
+
+  public async exact(request: any): Promise<any> {
+    return new Promise<any>(async (resolve, reject) => {
+      if (Object.keys(request.body).length === 0) {
+        reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
+        return;
+      }
+
+      if (
+        Validator.isNotNullOrUndefined([
+          request.body.zipcode,
+          request.body.city,
+          request.body.state,
+          request.body.number,
+          request.body.street,
+        ])
+      ) {
+        reject(new Error(QUERY_MISSING_PARAMETERS));
+        return;
+      }
+
+      this.request(request)
+        .then((response) => {
+          const results: AddressResult[] = response;
+
+          const normalize = (str: string) => str.trim().toUpperCase();
+
+          const output = results.find((result) => {
+            return (
+              normalize(result.number) === normalize(request.body.number) &&
+              normalize(result.street) === normalize(request.body.street) &&
+              normalize(result.street2 || "") ===
+                normalize(request.body.street2 || "")
+            );
+          });
+
+          if (!output) {
+            reject(new Error(ADDRESS_NOT_FOUND_ERROR));
+            loggerService
+              .warning({ message: ADDRESS_NOT_FOUND_ERROR, path: request.path })
+              .flush();
+            return;
+          }
+
+          if (output.street2) {
+            output.formattedAddress = `${output.number} ${output.street} ${output.street2}, ${output.city}, ${output.state} ${output.zipcode}`;
+          } else {
+            output.formattedAddress = `${output.number} ${output.street}, ${output.city}, ${output.state} ${output.zipcode}`;
+          }
+
+          resolve(output);
+        })
+        .catch((error) => {
+          const formattedError =
+            "Exception Caught in address.service.ts -> \n exact -> \n this.request " +
+            error.message;
+          loggerService
+            .warning({ message: formattedError, path: request.path })
+            .flush();
+          reject(new Error(formattedError));
+          return;
         });
     });
   }
