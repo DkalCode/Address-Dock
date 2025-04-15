@@ -59,6 +59,51 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
+/**
+   * @swagger
+   * /address/city:
+   *   post:
+   *     summary: Returns the first city associated with the given zipcode.
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             required: [zipcode, city]
+   *             properties:
+   *               zipcode:
+   *                 type: string
+   *                 description: A valid zipcode (e.g. "14586").
+   *     tags: [address]
+   *     responses:
+   *       200:
+   *         description: Successful response
+   *       400:
+   *         description: Bad request
+   */
+
+private city_post(req: Request, res: Response, next: NextFunction) {
+  addressService
+    .city(req)
+    .then((response) => {
+      res
+        .status(200)
+        .send(
+          responseWrapper(RESPONSE_STATUS_OK, RESPONSE_EVENT_READ, response)
+        );
+    })
+    .catch((err) => {
+      res
+        .status(400)
+        .send(
+          responseWrapper(RESPONSE_STATUS_FAIL, RESPONSE_EVENT_READ, err)
+        );
+    });
+}
+
+
+
   /**
    * @swagger
    * /address/request:

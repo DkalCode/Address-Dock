@@ -31,6 +31,38 @@ class AddressService {
     });
   }
 
+  public async city(cityRequest?: any): Promise<any> {
+    return new Promise<any>(async (resolve, reject) => {
+      //console.log(cityRequest.body.zipcode.length);
+      if (!cityRequest || cityRequest.body.zipcode.length != 5) {
+        console.log(`Please provide a valid zipcode`);            //console for method specific handling
+        reject(NULL_ADDRESS_REQUEST_ERROR);                       //full reject for generic class handling
+        return;
+      }
+      console.log(`Fetching data`);
+      fetch(AddressService.fetchUrl, {
+        method: "POST",
+        body: JSON.stringify(cityRequest.body),
+      })
+        .then(async (response) => {
+          let json = await response.json() as any;
+          //console.log(json);
+            resolve(json[0].city);
+        })
+        .catch((err) => {
+          loggerService
+            .error({
+              path: "/address/city",
+              message: `${(err as Error).message}`,
+            })
+            .flush();
+          reject(err);
+        });
+    });
+  }
+
+
+
   public async request(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       fetch(AddressService.fetchUrl, {
@@ -119,6 +151,11 @@ class AddressService {
   public async distance(addressRequest?: any): Promise<any> {
     // Complete this
     return new Promise<any>(async (resolve, reject) => {
+
+      if (!addressRequest) {
+        reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
+        return;
+      }
 
       try {
         let newRequest = { body: addressRequest.body.addresses[0] };
