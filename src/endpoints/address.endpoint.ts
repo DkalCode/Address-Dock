@@ -104,6 +104,31 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
+
+  private distance_post(req: Request, res: Response, next: NextFunction) {
+    addressService
+      .distance(req)
+      .then((distances: Array<number>) => {
+        res
+          .status(200)
+          .send(
+            responseWrapper(RESPONSE_STATUS_OK, RESPONSE_EVENT_READ, { "kilometers": distances[0], "miles": distances[1] })
+          );
+      })
+      .catch((err: Error) => {
+        console.log(err.message);
+        res
+          .status(400)
+          .send(
+            responseWrapper(RESPONSE_STATUS_FAIL, RESPONSE_EVENT_READ, err.message)
+          );
+      });
+  }
+
+
+
+
+
   private exact_post(req: Request, res: Response, next: NextFunction) {
     addressService
       .exact(req)
