@@ -12,7 +12,9 @@ router.get("*", (req: Request, res: Response, next: NextFunction) => {
       require(path).getRoute(req, res, next);
     })
     .catch((err: HttpError) => {
-      loggerService.debug({ message: err.message, path: req.path }).flush();
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
       res.status(err.status).send({
         error: {
           status: err.status,
@@ -28,7 +30,9 @@ router.post("*", (req: Request, res: Response, next: NextFunction) => {
       require(path).postRoute(req, res, next);
     })
     .catch((err: HttpError) => {
-      loggerService.debug({ message: err.message, path: req.path }).flush();
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
       res.status(err.status).send({
         error: {
           status: err.status,
@@ -44,7 +48,9 @@ router.put("*", (req: Request, res: Response, next: NextFunction) => {
       require(path).putRoute(req, res, next);
     })
     .catch((err: HttpError) => {
-      loggerService.debug({ message: err.message, path: req.path }).flush();
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
       res.status(err.status).send({
         error: {
           status: err.status,
@@ -60,7 +66,9 @@ router.delete("*", (req: Request, res: Response, next: NextFunction) => {
       require(path).deleteRoute(req, res, next);
     })
     .catch((err: HttpError) => {
-      loggerService.debug({ message: err.message, path: req.path }).flush();
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
       res.status(err.status).send({
         error: {
           status: err.status,
