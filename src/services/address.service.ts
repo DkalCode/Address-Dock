@@ -57,7 +57,10 @@ class AddressService {
   public async city(cityRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       if (!cityRequest || cityRequest.body.zipcode.length != 5) {
-        reject(NULL_ADDRESS_REQUEST_ERROR); //full reject for generic class handling
+        loggerService
+          .debug({ message: NULL_ADDRESS_REQUEST_ERROR, path: "/address/city" })
+          .flush();
+        reject(NULL_ADDRESS_REQUEST_ERROR);
         return;
       }
       fetch(AddressService.fetchUrl, {
@@ -70,10 +73,7 @@ class AddressService {
         })
         .catch((err) => {
           loggerService
-            .error({
-              path: "/address/city",
-              message: `${(err as Error).message}`,
-            })
+            .error({ message: err.message, path: "/address/city" })
             .flush();
           reject(err);
         });
@@ -104,6 +104,7 @@ class AddressService {
   public async exact(request: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       if (!request || Object.keys(request.body).length === 0) {
+        loggerService.debug({ message: NULL_ADDRESS_REQUEST_ERROR }).flush();
         reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
         return;
       }
@@ -117,6 +118,7 @@ class AddressService {
           request.body.street,
         ])
       ) {
+        loggerService.debug({ message: QUERY_MISSING_PARAMETERS }).flush();
         reject(new Error(QUERY_MISSING_PARAMETERS));
         return;
       }
@@ -138,9 +140,7 @@ class AddressService {
 
           if (!output) {
             reject(new Error(ADDRESS_NOT_FOUND_ERROR));
-            loggerService
-              .warning({ message: ADDRESS_NOT_FOUND_ERROR, path: request.path })
-              .flush();
+            loggerService.warning({ message: ADDRESS_NOT_FOUND_ERROR }).flush();
             return;
           }
 
@@ -156,9 +156,7 @@ class AddressService {
           const formattedError =
             "Exception Caught in address.service.ts -> \n exact -> \n this.request " +
             error.message;
-          loggerService
-            .warning({ message: formattedError, path: request.path })
-            .flush();
+          loggerService.warning({ message: formattedError }).flush();
           reject(new Error(formattedError));
           return;
         });
@@ -169,6 +167,7 @@ class AddressService {
     // Complete this
     return new Promise<any>(async (resolve, reject) => {
       if (!addressRequest || Object.keys(addressRequest.body).length === 0) {
+        loggerService.debug({ message: NULL_ADDRESS_REQUEST_ERROR }).flush();
         reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
         return;
       }
