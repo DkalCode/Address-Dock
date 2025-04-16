@@ -5,7 +5,7 @@ import loggerService from "./logger.service";
 
 export const NULL_ADDRESS_REQUEST_ERROR = "You must provide an Address Request";
 
-const ADDRESS_NOT_FOUND_ERROR = "Address not found";
+export const ADDRESS_NOT_FOUND_ERROR = "Address not found";
 
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
@@ -15,19 +15,48 @@ class AddressService {
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       if (!addressRequest) {
-        reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
+        reject(NULL_ADDRESS_REQUEST_ERROR);
         return;
       }
 
-      this.request(addressRequest)
-        .then((response: Array<Object>) => {
-          resolve({
-            count: response.length,
+      if (addressRequest.body.page != undefined) {
+        this.request(addressRequest)
+          .then((response: Array<Object>) => {
+            resolve(
+              {
+                count: response.length
+              }
+            )
+          })
+          .catch((err) => {
+            reject(err);
           });
-        })
-        .catch((err) => {
-          reject(err);
+      }
+      else {
+        let count = 0;
+        let page = 1;
+        let responseSize = 0;
+        do {
+          addressRequest.body.page = page;
+          await this.request(addressRequest)
+            .then((response) => {
+              console.log(response);
+              responseSize = response.length;
+              count += response.length;
+              page++;
+            })
+            .catch((err) => {
+              console.log(err);
+              reject(err);
+              return;
+            });
+        } while (responseSize > 0)
+
+        resolve({
+          count: count
         });
+
+      }
     });
   }
 
