@@ -103,7 +103,7 @@ class AddressService {
 
   public async exact(request: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
-      if (Object.keys(request.body).length === 0) {
+      if (!request || Object.keys(request.body).length === 0) {
         reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
         return;
       }
@@ -168,6 +168,10 @@ class AddressService {
   public async distance(addressRequest?: any): Promise<any> {
     // Complete this
     return new Promise<any>(async (resolve, reject) => {
+      if (!addressRequest || Object.keys(addressRequest.body).length === 0) {
+        reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
+        return;
+      }
       try {
         let newRequest = { body: addressRequest.body.addresses[0] };
 

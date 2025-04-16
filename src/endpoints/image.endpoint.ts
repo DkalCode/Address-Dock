@@ -22,7 +22,7 @@ class ImageEndpoint extends baseEndpoint {
           .then((response) => response.blob())
           .then(async (image) => {
             res.setHeader("Content-Type", "image/jpeg");
-            res.send(Buffer.from(await image.arrayBuffer()));
+            res.status(200).send(Buffer.from(await image.arrayBuffer()));
           });
       })
       .catch((err) => {

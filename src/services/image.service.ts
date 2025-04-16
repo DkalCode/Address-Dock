@@ -10,9 +10,9 @@ class ImageService {
 
   public async request(request: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
-      if (Object.keys(request.body).length === 0) {
+      if (!request || !request.body || Object.keys(request.body).length === 0) {
         loggerService
-          .warning({ message: QUERY_NOT_PROVIDED, path: request.path })
+          .warning({ message: QUERY_NOT_PROVIDED, path: "/image/request" })
           .flush();
         reject(new Error(QUERY_NOT_PROVIDED));
         return;
