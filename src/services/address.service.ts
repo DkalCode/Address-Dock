@@ -5,49 +5,68 @@ import loggerService from "./logger.service";
 
 export const NULL_ADDRESS_REQUEST_ERROR = "You must provide an Address Request";
 
-const ADDRESS_NOT_FOUND_ERROR = "Address not found";
+export const ADDRESS_NOT_FOUND_ERROR = "Address not found";
 
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
 
-  constructor() { }
+  constructor() {}
 
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       if (!addressRequest) {
-        reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
+        reject(NULL_ADDRESS_REQUEST_ERROR);
         return;
       }
 
-      this.request(addressRequest)
-        .then((response: Array<Object>) => {
-          resolve({
-            count: response.length,
+      if (addressRequest.body.page != undefined) {
+        this.request(addressRequest)
+          .then((response: Array<Object>) => {
+            resolve({
+              count: response.length,
+            });
+          })
+          .catch((err) => {
+            reject(err);
           });
-        })
-        .catch((err) => {
-          reject(err);
+      } else {
+        let count = 0;
+        let page = 1;
+        let responseSize = 0;
+        do {
+          addressRequest.body.page = page;
+          await this.request(addressRequest)
+            .then((response) => {
+              responseSize = response.length;
+              count += response.length;
+              page++;
+            })
+            .catch((err) => {
+              reject(err);
+              return;
+            });
+        } while (responseSize > 0);
+
+        resolve({
+          count: count,
         });
+      }
     });
   }
 
   public async city(cityRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
-      //console.log(cityRequest.body.zipcode.length);
       if (!cityRequest || cityRequest.body.zipcode.length != 5) {
-        console.log(`Please provide a valid zipcode`);            //console for method specific handling
-        reject(NULL_ADDRESS_REQUEST_ERROR);                       //full reject for generic class handling
+        reject(NULL_ADDRESS_REQUEST_ERROR); //full reject for generic class handling
         return;
       }
-      console.log(`Fetching data`);
       fetch(AddressService.fetchUrl, {
         method: "POST",
         body: JSON.stringify(cityRequest.body),
       })
         .then(async (response) => {
-          let json = await response.json() as any;
-          //console.log(json);
-            resolve(json[0].city);
+          let json = (await response.json()) as any;
+          resolve(json[0].city);
         })
         .catch((err) => {
           loggerService
@@ -113,7 +132,7 @@ class AddressService {
               normalize(result.number) === normalize(request.body.number) &&
               normalize(result.street) === normalize(request.body.street) &&
               normalize(result.street2 || "") ===
-              normalize(request.body.street2 || "")
+                normalize(request.body.street2 || "")
             );
           });
 
@@ -149,26 +168,30 @@ class AddressService {
   public async distance(addressRequest?: any): Promise<any> {
     // Complete this
     return new Promise<any>(async (resolve, reject) => {
-
       try {
         let newRequest = { body: addressRequest.body.addresses[0] };
-        
-        let address1 = await this.exact(newRequest);
-        let address2 = await this.exact({ body: addressRequest.body.addresses[1] });
 
-        this.getDistance(address1.latitude, address1.longitude, address2.latitude, address2.longitude)
-        .then((disances) => resolve(disances))
-        .catch((err) => {
-          loggerService
-            .error({
-              path: "/distance",
-              message: `${err.message + "in address.service"}`,
-            })
-            .flush();
-          reject(err);
+        let address1 = await this.exact(newRequest);
+        let address2 = await this.exact({
+          body: addressRequest.body.addresses[1],
         });
 
-
+        this.getDistance(
+          address1.latitude,
+          address1.longitude,
+          address2.latitude,
+          address2.longitude
+        )
+          .then((disances) => resolve(disances))
+          .catch((err) => {
+            loggerService
+              .error({
+                path: "/distance",
+                message: `${err.message + "in address.service"}`,
+              })
+              .flush();
+            reject(err);
+          });
       } catch (err: any) {
         loggerService
           .warning({ message: err.message, path: "/address/distance" })
@@ -176,17 +199,20 @@ class AddressService {
         reject(err);
         return;
       }
-    })
-
-
+    });
   }
 
-  private async getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  private async getDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) {
     // Defining this function inside of this private method means it's
     // not accessible outside of it, which is perfect for encapsulation.
     const toRadians = (degrees: number) => {
       return degrees * (Math.PI / 180);
-    }
+    };
 
     // Radius of the Earth in KM
     const R = 6371;
@@ -199,8 +225,10 @@ class AddressService {
     // on a sphere.
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
