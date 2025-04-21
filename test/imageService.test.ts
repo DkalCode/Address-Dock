@@ -6,33 +6,27 @@ import imageService from "../src/services/image.service";
  *  negative test cases
  */
 test("imageService.request: null request - expect error returned", async () => {
-  let error: any;
   await imageService
     .request(null)
     .then(() => {
       fail("imageService.request: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(QUERY_NOT_PROVIDED);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(QUERY_NOT_PROVIDED);
 });
 
 test("imageService.request: empty request - expect error returned", async () => {
-  let error: any;
   await imageService
     .request({})
     .then(() => {
       fail("imageService.request: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(QUERY_NOT_PROVIDED);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(QUERY_NOT_PROVIDED);
 });
 
 /*
@@ -54,7 +48,7 @@ test("imageService.request: valid request - expected 200 status", async () => {
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
     })
-    .catch((err: Error) => {
+    .catch((err) => {
       fail("imageService.request: Unexpected Error");
     });
 }, 30000);
