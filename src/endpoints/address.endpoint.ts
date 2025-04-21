@@ -14,32 +14,6 @@ class AddressEndpoint extends baseEndpoint {
     super.executeSubRoute(addressEndpoint, req, res, next);
   }
 
-  /**
-   * @swagger
-   * /address/count:
-   *   post:
-   *     summary: Returns the count of addresses given a request body.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required: [zipcode, city]
-   *             properties:
-   *               zipcode:
-   *                 type: string
-   *                 description: A valid zipcode (e.g. "14586").
-   *               city:
-   *                 type: string
-   *                 description: A city name (e.g. "Rochester").
-   *     tags: [address]
-   *     responses:
-   *       200:
-   *         description: Successful response
-   *       400:
-   *         description: Bad request
-   */
   private count_post(req: Request, res: Response, next: NextFunction) {
     addressService
       .count(req)
@@ -58,30 +32,6 @@ class AddressEndpoint extends baseEndpoint {
           );
       });
   }
-
-  /**
-   * @swagger
-   * /address/city:
-   *   post:
-   *     summary: Returns the first city associated with the given zipcode.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required: [zipcode, city]
-   *             properties:
-   *               zipcode:
-   *                 type: string
-   *                 description: A valid zipcode (e.g. "14586").
-   *     tags: [address]
-   *     responses:
-   *       200:
-   *         description: Successful response
-   *       400:
-   *         description: Bad request
-   */
 
   private city_post(req: Request, res: Response, next: NextFunction) {
     addressService
@@ -102,32 +52,6 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  /**
-   * @swagger
-   * /address/request:
-   *   post:
-   *     summary: Returns an array of addresses given a request body.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required: [zipcode, city]
-   *             properties:
-   *               zipcode:
-   *                 type: string
-   *                 description: A valid zipcode (e.g. "14586").
-   *               city:
-   *                 type: string
-   *                 description: A city name (e.g. "Rochester").
-   *     tags: [address]
-   *     responses:
-   *       200:
-   *         description: Successful response
-   *       400:
-   *         description: Bad request
-   */
   private request_post(req: Request, res: Response, next: NextFunction) {
     addressService
       .request(req)
