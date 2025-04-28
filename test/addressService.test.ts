@@ -6,13 +6,13 @@ import {
   ADDRESS_NOT_FOUND_ERROR,
 } from "../src/services/address.service";
 
-test("rejects when request is null", async () => {
+test("city: null request - rejects when request is null", async () => {
   await expect(addressService.city(null)).rejects.toEqual(
     NULL_ADDRESS_REQUEST_ERROR
   );
 });
 
-test("rejects when zipcode is not 5 characters", async () => {
+test("city: bad zipcode - rejects when zipcode is not 5 characters", async () => {
   const badRequest = { body: { zipcode: "12" } };
   await expect(addressService.city(badRequest)).rejects.toEqual(
     NULL_ADDRESS_REQUEST_ERROR
@@ -86,10 +86,10 @@ test("distance: bad request - expect error returned", async () => {
             street2: "18C",
             city: "WEST HENRIETTA",
             state: "NY",
-            zipcode: "14586",
-          },
-        ],
-      },
+            zipcode: "14586"
+          }
+        ]
+      }
     })
     .then(() => {
       fail("addressService.distance: Unexpected Success");
@@ -122,10 +122,10 @@ test("distance: good request - expect distance returned", async () => {
             street2: "18C",
             city: "WEST HENRIETTA",
             state: "NY",
-            zipcode: "14586",
-          },
-        ],
-      },
+            zipcode: "14586"
+          }
+        ]
+      }
     })
     .then((distances) => {
       let actualKilometers = distances[0];

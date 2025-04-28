@@ -10,7 +10,7 @@ export const ADDRESS_NOT_FOUND_ERROR = "Address not found";
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
 
-  constructor() {}
+  constructor() { }
 
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
@@ -32,8 +32,9 @@ class AddressService {
       } else {
         let count = 0;
         let page = 1;
-        let responseSize = 0;
-        do {
+        let responseSize = 1;
+        // do :)
+        while (responseSize > 0) {
           addressRequest.body.page = page;
           await this.request(addressRequest)
             .then((response) => {
@@ -45,11 +46,11 @@ class AddressService {
               reject(err);
               return;
             });
-        } while (responseSize > 0);
 
-        resolve({
-          count: count,
-        });
+          resolve({
+            count: count,
+          });
+        }
       }
     });
   }
@@ -135,7 +136,7 @@ class AddressService {
               normalize(result.number) === normalize(request.body.number) &&
               normalize(result.street) === normalize(request.body.street) &&
               normalize(result.street2 || "") ===
-                normalize(request.body.street2 || "")
+              normalize(request.body.street2 || "")
             );
           });
 
@@ -230,9 +231,9 @@ class AddressService {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRadians(lat1)) *
-        Math.cos(toRadians(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(toRadians(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
