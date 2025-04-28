@@ -69,7 +69,8 @@ class AddressService {
       })
         .then(async (response) => {
           let json = (await response.json()) as any;
-          resolve(json[0].city);
+          if (json[0].city != undefined)
+            resolve(json[0].city);
         })
         .catch((err) => {
           loggerService
