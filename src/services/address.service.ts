@@ -12,6 +12,7 @@ class AddressService {
 
   constructor() { }
 
+  // Count number of addresses returned by the request to the API
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       if (!addressRequest) {
@@ -32,9 +33,9 @@ class AddressService {
       } else {
         let count = 0;
         let page = 1;
-        let responseSize = 1;
+        let responseSize = 1000;
         // do :)
-        while (responseSize > 0) {
+        while (responseSize === 1000) {
           addressRequest.body.page = page;
           await this.request(addressRequest)
             .then((response) => {
