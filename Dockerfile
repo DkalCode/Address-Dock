@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE ${SERVER_PORT}
 
-CMD ["node", "src/server.js"]
+CMD ["node", "server.js"]
