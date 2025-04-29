@@ -56,8 +56,10 @@ This project requires:
    ```
 3. Create .env file with the following
    ```
-   SERVER_PORT=8080
-   ENV="dev"
+  ENV=dev
+  SERVER_PORT=8080
+  GOOGLE_API_TOKEN=<GOOGLE_API_TOKEN>
+
    ```
 4. Run the project with
    ```
@@ -93,21 +95,130 @@ This project requires:
 | :------------------- | :----- | :--------------------------- |
 | `See Body Reference` | `json` | Either Zip Code or City Name |
 
+#### Get details on an exact address
+
+```http
+  POST /address/exact
+```
+
+| Body                 | Type   | Description                             |
+| :------------------- | :----- | :---------------------------------------|
+| `See Body Reference` | `json` | Number, Street, City, State and Zipcode |
+
+#### Gets a city from a zipcode
+
+```http
+  POST /address/city
+```
+
+| Body                 | Type   | Description                             |
+| :------------------- | :----- | :---------------------------------------|
+| `See Body Reference` | `json` | Zipcode                                 |
+
+#### Gets a distance from two addresses
+
+```http
+  POST /address/city
+```
+
+| Body                 | Type   | Description                             |
+| :------------------- | :----- | :---------------------------------------|
+| `See Body Reference` | `json` | `See Body Reference`                    |
+
+#### Gets an image from a given address
+
+```http
+  POST /image/request
+```
+
+| Body                 | Type   | Description                             |
+| :------------------- | :----- | :---------------------------------------|
+| `See Body Reference` | `json` | `See Body Reference`                    |
+
+
+
+
 #### Body Reference
 
-**Query by City:**
+**Count Endpoint:**
 
 ```json
 {
-  "city": "Victor"
+  "city": "Victor",
+  //OR
+  "zipcode": "14512",
+  //OPTIONAL
+  "page": 1
 }
 ```
 
-**Query by Zip Code:**
+**Request Endpoint:**
 
 ```json
 {
-  "zipcode": "14586"
+  "city": "Victor",
+  //OR
+  "zipcode": "14512",
+  //OR
+  "state": "NY",
+  //OPTIONAL
+  "page": 1
+}
+```
+**Exact Endpoint:**
+
+```json
+{
+    "number": "4255",
+    "street": "E RIVER RD",
+    "city": "WEST HENRIETTA",
+    "state": "NY",
+    "zipcode": "14586"
+}
+```
+
+**City Endpoint:**
+
+```json
+{
+    "zipcode": "14586"
+}
+```
+
+**Distance Endpoint:**
+
+```json
+{
+    "addresses": [
+     {
+    "number": "4255",
+    "street": "E RIVER RD",
+    "street2": "15C",
+    "city": "WEST HENRIETTA",
+    "state": "NY",
+    "zipcode": "14586"
+    },
+     {
+    "number": "4255",
+    "street": "E RIVER RD",
+    "street2": "18C",
+    "city": "WEST HENRIETTA",
+    "state": "NY",
+    "zipcode": "14586"
+    }
+    ]
+}
+```
+
+**Image Endpoint:**
+
+```json
+{
+    "number": "4255",
+    "street": "E RIVER RD",
+    "city": "WEST HENRIETTA",
+    "state": "NY",
+    "zipcode": "14586"
 }
 ```
 
