@@ -47,6 +47,7 @@ test("imageService.request: valid request - expected 200 status", async () => {
     .then((response) => {
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
+      expect(response.headers.get("Content-Type")).toEqual("image/jpeg");
     })
     .catch((err) => {
       fail("imageService.request: Unexpected Error");
