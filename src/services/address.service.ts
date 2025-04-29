@@ -62,11 +62,11 @@ class AddressService {
               reject(err);
               return;
             });
-
+          }
           resolve({
             count: count,
           });
-        }
+        
       }
     });
   }
