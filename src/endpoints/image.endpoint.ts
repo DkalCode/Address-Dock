@@ -3,7 +3,6 @@ import baseEndpoint from "./base.endpoint";
 import responseWrapper from "../services/response.service";
 
 import {
-  RESPONSE_STATUS_OK,
   RESPONSE_EVENT_READ,
   RESPONSE_STATUS_FAIL,
 } from "../constants/generic.constants";
@@ -14,7 +13,7 @@ class ImageEndpoint extends baseEndpoint {
     super.executeSubRoute(imageEndpoint, req, res, next);
   }
 
-  private request_post(req: Request, res: Response, next: NextFunction) {
+  private request_post(req: Request, res: Response) {
     imageService
       .request(req)
       .then((response) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ILoggerBody, ILoggerTransports } from '../interfaces/logger.interface';
 
 class Logger {
@@ -78,7 +79,7 @@ class Logger {
      */
     private writeToStandardOut(): void {
         if (this.writeToStdOut) {
-            for (let log of this.cache) {
+            for (const log of this.cache) {
                 process.stdout.write(`${log}\n`);
             }
         }
@@ -91,7 +92,7 @@ class Logger {
         //TODO: Implement logic to send log to a log aggregattion service like Prometheus | Grafana Loki.
     }
 
-    private log(logType: ILoggerBody, level: string, logKeyPairs?: {}): void {
+    private log(logType: ILoggerBody, level: string, logKeyPairs?: object): void {
         const keySetValues = this.parseLogKeyPairs(logKeyPairs);
         const logMessage = `[time]=${this.timeStamp()} [level]=${level} [message]='${logType.message}' ${keySetValues}[path]=${logType.path} [execution_time]=${this.executionTime()}ms`;
 
@@ -113,8 +114,8 @@ class Logger {
      */
     private timeStamp(): string {
         // const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        let currentTime = new Date();
-        let timeStamp = currentTime.toString()
+        const currentTime = new Date();
+        const timeStamp = currentTime.toString()
 
         return `${timeStamp} `;
     }
@@ -129,7 +130,7 @@ class Logger {
             return formattedKeyPairs;
         }
 
-        for (let key in logKeyPairs) {
+        for (const key in logKeyPairs) {
             formattedKeyPairs += `[${key}]=${logKeyPairs[key]} `;
         }
 

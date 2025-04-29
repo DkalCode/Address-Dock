@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-async-promise-executor */
 import { GOOGLE_API_TOKEN } from "../constants/environment-vars.constants";
 import { QUERY_NOT_PROVIDED } from "../constants/errors.constants";
 import loggerService from "./logger.service";
-import addressService, { NULL_ADDRESS_REQUEST_ERROR } from "./address.service";
+import addressService from "./address.service";
 
 class ImageService {
   private static fetchUrl = "https://maps.googleapis.com/maps/api/streetview";

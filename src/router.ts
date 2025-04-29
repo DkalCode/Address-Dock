@@ -1,3 +1,6 @@
+// Disabling the rule to allow for require imports
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from "fs";
 import express, { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";

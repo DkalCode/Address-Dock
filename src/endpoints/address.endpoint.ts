@@ -14,7 +14,7 @@ class AddressEndpoint extends baseEndpoint {
     super.executeSubRoute(addressEndpoint, req, res, next);
   }
 
-  private count_post(req: Request, res: Response, next: NextFunction) {
+  private count_post(req: Request, res: Response) {
     addressService
       .count(req)
       .then((response) => {
@@ -33,7 +33,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  private city_post(req: Request, res: Response, next: NextFunction) {
+  private city_post(req: Request, res: Response) {
     addressService
       .city(req)
       .then((response) => {
@@ -52,7 +52,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  private request_post(req: Request, res: Response, next: NextFunction) {
+  private request_post(req: Request, res: Response) {
     addressService
       .request(req)
       .then((response) => {
@@ -71,7 +71,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  private distance_post(req: Request, res: Response, next: NextFunction) {
+  private distance_post(req: Request, res: Response) {
     addressService
       .distance(req)
       .then((distances: Array<number>) => {
@@ -95,7 +95,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  private exact_post(req: Request, res: Response, next: NextFunction) {
+  private exact_post(req: Request, res: Response) {
     addressService
       .exact(req)
       .then((response) => {

@@ -1,18 +1,11 @@
+// Because this class is used as a base class for other endpoints, we need to disable the no-unused-vars rule
+// to avoid linting errors when the methods are not used in the base class itself.
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
-import responseWrapper from "../services/response.service";
-import {
-  RESPONSE_STATUS_FAIL,
-  RESPONSE_EVENT_READ,
-} from "../constants/generic.constants";
-import { INVALID_REQUEST } from "../constants/errors.constants";
 import createHttpError from "http-errors";
 
 class BaseEndpoint {
-  private readonly extensions = new Map<string, string>([
-    ["dev", ".js"],
-    ["prod", ".ts"],
-  ]);
-
   public constructor() {}
 
   public get(req: Request, res: Response, next: NextFunction) {

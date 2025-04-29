@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-async-promise-executor */
 import { QUERY_MISSING_PARAMETERS } from "../constants/errors.constants";
 import { AddressResult } from "../types/types";
 import Validator from "../utility/validator.utility";
@@ -10,7 +12,7 @@ export const ADDRESS_NOT_FOUND_ERROR = "Address not found";
 class AddressService {
   private static fetchUrl = "https://ischool.gccis.rit.edu/addresses/";
 
-  constructor() { }
+  constructor() {}
 
   // Count number of addresses returned by the request to the API
   public async count(addressRequest?: any): Promise<any> {
@@ -27,7 +29,7 @@ class AddressService {
       // and return the total count of all responses combined
       if (addressRequest.body.page != undefined) {
         this.request(addressRequest)
-          .then((response: Array<Object>) => {
+          .then((response: Array<object>) => {
             resolve({
               count: response.length,
             });
@@ -83,9 +85,8 @@ class AddressService {
         body: JSON.stringify(cityRequest.body),
       })
         .then(async (response) => {
-          let json = (await response.json()) as any;
-          if (json[0].city != undefined)
-            resolve(json[0].city);
+          const json = (await response.json()) as any;
+          if (json[0].city != undefined) resolve(json[0].city);
         })
         .catch((err) => {
           loggerService
@@ -97,7 +98,7 @@ class AddressService {
   }
 
   // Fetch the address endpoint with the user provided request
-  // Resolves with the response from the API 
+  // Resolves with the response from the API
   public async request(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       fetch(AddressService.fetchUrl, {
@@ -152,7 +153,7 @@ class AddressService {
               normalize(result.number) === normalize(request.body.number) &&
               normalize(result.street) === normalize(request.body.street) &&
               normalize(result.street2 || "") ===
-              normalize(request.body.street2 || "")
+                normalize(request.body.street2 || "")
             );
           });
 
@@ -193,8 +194,12 @@ class AddressService {
       }
       try {
         // Uses the addressRequest object to get the two exact addresses from the user provided request
-        let address1 = await this.exact({ body: addressRequest.body.addresses[0] });
-        let address2 = await this.exact({ body: addressRequest.body.addresses[1] });
+        const address1 = await this.exact({
+          body: addressRequest.body.addresses[0],
+        });
+        const address2 = await this.exact({
+          body: addressRequest.body.addresses[1],
+        });
 
         // Gets the distance between the two addresses using the exact addresses latitudes and longitudes
         this.getDistance(
@@ -203,7 +208,7 @@ class AddressService {
           address2.latitude,
           address2.longitude
         )
-        // Resolves with the distance in kilometers and miles
+          // Resolves with the distance in kilometers and miles
           .then((disances) => resolve(disances))
           .catch((err) => {
             loggerService
@@ -250,9 +255,9 @@ class AddressService {
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
