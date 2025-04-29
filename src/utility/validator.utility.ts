@@ -6,7 +6,16 @@ class Validator {
   // If all values are null or undefined, return true.
   // Otherwise, return false.
   static isNullOrUndefined(value: any[]): boolean {
-    return value.every((val) => val == null || val == undefined);
+    let isNullOrUndefined = false;
+    value.forEach((val) => {
+      if (val === undefined) {
+        isNullOrUndefined = true;
+      }
+      if (val === null) {
+        isNullOrUndefined = true;
+      }
+    });
+    return isNullOrUndefined;
   }
 }
 

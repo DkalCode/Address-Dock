@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-async-promise-executor */
+import { log } from "console";
 import { QUERY_MISSING_PARAMETERS } from "../constants/errors.constants";
 import { AddressResult } from "../types/types";
 import Validator from "../utility/validator.utility";
@@ -127,6 +128,18 @@ class AddressService {
         reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
         return;
       }
+
+      console.log( Validator.isNullOrUndefined([
+        request.body.zipcode,
+        request.body.city,
+        request.body.state,
+        request.body.number,
+        request.body.street,
+      ]));
+
+      console.log(request.body.zipcode);
+      
+      
 
       if (
         Validator.isNullOrUndefined([
