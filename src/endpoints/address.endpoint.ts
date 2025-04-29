@@ -9,11 +9,13 @@ import {
   RESPONSE_EVENT_READ,
 } from "../constants/generic.constants";
 
+// AddressEndpoint class extnded off the baseEnpoint class
 class AddressEndpoint extends baseEndpoint {
   public post(req: Request, res: Response, next: NextFunction) {
     super.executeSubRoute(addressEndpoint, req, res, next);
   }
 
+  // Gets the count of addresses returned from the query
   private count_post(req: Request, res: Response) {
     addressService
       .count(req)
@@ -33,6 +35,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
+  // gets the city from the address provided
   private city_post(req: Request, res: Response) {
     addressService
       .city(req)
@@ -52,6 +55,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
+  // Base request method
   private request_post(req: Request, res: Response) {
     addressService
       .request(req)
@@ -71,6 +75,8 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
+  // gets the distance between two addresses
+  // returns the distance in kilometers and miles
   private distance_post(req: Request, res: Response) {
     addressService
       .distance(req)
@@ -95,6 +101,7 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
+  // Gets an exact address based on the request
   private exact_post(req: Request, res: Response) {
     addressService
       .exact(req)
@@ -115,8 +122,11 @@ class AddressEndpoint extends baseEndpoint {
   }
 }
 
+// Creates an address endpoint object
+// This object will be used to handle all requests to the address endpoint
 const addressEndpoint = new AddressEndpoint();
 
+// Sets the get, post, put and delete routes for the address endpoint object
 const getRoute = addressEndpoint.get;
 const postRoute = addressEndpoint.post;
 const putRoute = addressEndpoint.put;

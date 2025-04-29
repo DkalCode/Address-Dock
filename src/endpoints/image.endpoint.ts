@@ -8,11 +8,13 @@ import {
 } from "../constants/generic.constants";
 import imageService from "../services/image.service";
 
+// Image endpoint class built off the base endpoint
 class ImageEndpoint extends baseEndpoint {
   public post(req: Request, res: Response, next: NextFunction) {
     super.executeSubRoute(imageEndpoint, req, res, next);
   }
 
+// Calls the google streetview API to get an image of the address
   private request_post(req: Request, res: Response) {
     imageService
       .request(req)
@@ -34,11 +36,16 @@ class ImageEndpoint extends baseEndpoint {
   }
 }
 
+// Creates an image endpoint object
+// This object will be used to handle all requests to the image endpoint
 const imageEndpoint = new ImageEndpoint();
 
+// Sets the get, post, put and delete routes for the image endpoint object
 const getRoute = imageEndpoint.get;
 const postRoute = imageEndpoint.post;
 const putRoute = imageEndpoint.put;
 const deleteRoute = imageEndpoint.delete;
 
 export { getRoute, postRoute, putRoute, deleteRoute };
+
+// Adds box shadows to the image endpoint object

@@ -7,8 +7,11 @@ import createHttpError from "http-errors";
 import { ENV } from "./constants/environment-vars.constants";
 import loggerService from "./services/logger.service";
 
+// Creates an instance of the express router
 const router = express.Router();
 
+// GET, POST, PUT and DELETE routes for all endpoints
+// Routes will match with any endpoints
 router.get("*", (req: Request, res: Response, next: NextFunction) => {
   validateEndpoint(req, res, () => {
     require(getEndpointControllerPath(req)).getRoute(req, res, next);
@@ -33,9 +36,12 @@ router.delete("*", (req: Request, res: Response, next: NextFunction) => {
   });
 });
 
+/// Get the path to the endpoint controller based on the request URL
 function getEndpointControllerPath(req: Request): string {
+  // Splits the request URL
   const paths = req.baseUrl.split("/");
 
+  // Checks if the request is valid
   const ext = ENV === "dev" ? "ts" : "js";
   const route = `${__dirname}/endpoints/${paths[1]}.endpoint.${ext}`;
   if (paths.length === 1 || !fs.existsSync(route) || paths[1] == "base") {
@@ -45,6 +51,8 @@ function getEndpointControllerPath(req: Request): string {
   return route;
 }
 
+/// Validate the endpoint and catch any errors that occur
+/// If an error occurs, log the error and send a 404 response
 function validateEndpoint(req: Request, res: Response, callback: () => void) {
   try {
     callback();
