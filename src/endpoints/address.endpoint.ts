@@ -9,38 +9,14 @@ import {
   RESPONSE_EVENT_READ,
 } from "../constants/generic.constants";
 
+// AddressEndpoint class extnded off the baseEnpoint class
 class AddressEndpoint extends baseEndpoint {
   public post(req: Request, res: Response, next: NextFunction) {
     super.executeSubRoute(addressEndpoint, req, res, next);
   }
 
-  /**
-   * @swagger
-   * /address/count:
-   *   post:
-   *     summary: Returns the count of addresses given a request body.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required: [zipcode, city]
-   *             properties:
-   *               zipcode:
-   *                 type: string
-   *                 description: A valid zipcode (e.g. "14586").
-   *               city:
-   *                 type: string
-   *                 description: A city name (e.g. "Rochester").
-   *     tags: [address]
-   *     responses:
-   *       200:
-   *         description: Successful response
-   *       400:
-   *         description: Bad request
-   */
-  private count_post(req: Request, res: Response, next: NextFunction) {
+  // Gets the count of addresses returned from the query
+  private count_post(req: Request, res: Response) {
     addressService
       .count(req)
       .then((response) => {
@@ -59,31 +35,8 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  /**
-   * @swagger
-   * /address/city:
-   *   post:
-   *     summary: Returns the first city associated with the given zipcode.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required: [zipcode, city]
-   *             properties:
-   *               zipcode:
-   *                 type: string
-   *                 description: A valid zipcode (e.g. "14586").
-   *     tags: [address]
-   *     responses:
-   *       200:
-   *         description: Successful response
-   *       400:
-   *         description: Bad request
-   */
-
-  private city_post(req: Request, res: Response, next: NextFunction) {
+  // gets the city from the address provided
+  private city_post(req: Request, res: Response) {
     addressService
       .city(req)
       .then((response) => {
@@ -102,33 +55,8 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  /**
-   * @swagger
-   * /address/request:
-   *   post:
-   *     summary: Returns an array of addresses given a request body.
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             required: [zipcode, city]
-   *             properties:
-   *               zipcode:
-   *                 type: string
-   *                 description: A valid zipcode (e.g. "14586").
-   *               city:
-   *                 type: string
-   *                 description: A city name (e.g. "Rochester").
-   *     tags: [address]
-   *     responses:
-   *       200:
-   *         description: Successful response
-   *       400:
-   *         description: Bad request
-   */
-  private request_post(req: Request, res: Response, next: NextFunction) {
+  // Base request method
+  private request_post(req: Request, res: Response) {
     addressService
       .request(req)
       .then((response) => {
@@ -147,7 +75,9 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  private distance_post(req: Request, res: Response, next: NextFunction) {
+  // gets the distance between two addresses
+  // returns the distance in kilometers and miles
+  private distance_post(req: Request, res: Response) {
     addressService
       .distance(req)
       .then((distances: Array<number>) => {
@@ -171,7 +101,8 @@ class AddressEndpoint extends baseEndpoint {
       });
   }
 
-  private exact_post(req: Request, res: Response, next: NextFunction) {
+  // Gets an exact address based on the request
+  private exact_post(req: Request, res: Response) {
     addressService
       .exact(req)
       .then((response) => {
@@ -191,8 +122,11 @@ class AddressEndpoint extends baseEndpoint {
   }
 }
 
+// Creates an address endpoint object
+// This object will be used to handle all requests to the address endpoint
 const addressEndpoint = new AddressEndpoint();
 
+// Sets the get, post, put and delete routes for the address endpoint object
 const getRoute = addressEndpoint.get;
 const postRoute = addressEndpoint.post;
 const putRoute = addressEndpoint.put;

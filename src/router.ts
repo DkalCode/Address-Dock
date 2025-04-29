@@ -1,11 +1,17 @@
+// Disabling the rule to allow for require imports
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from "fs";
 import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { HttpError } from "http-errors";
 import { ENV } from "./constants/environment-vars.constants";
 import loggerService from "./services/logger.service";
 
+// Creates an instance of the express router
 const router = express.Router();
 
+// GET, POST, PUT and DELETE routes for all endpoints
+// Routes will match with any endpoints
 router.get("*", (req: Request, res: Response, next: NextFunction) => {
   getEndpointControllerPath(req)
     .then(async (path) => {

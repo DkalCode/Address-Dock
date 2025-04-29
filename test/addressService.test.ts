@@ -6,13 +6,13 @@ import {
   ADDRESS_NOT_FOUND_ERROR,
 } from "../src/services/address.service";
 
-test("rejects when request is null", async () => {
+test("city: null request - rejects when request is null", async () => {
   await expect(addressService.city(null)).rejects.toEqual(
     NULL_ADDRESS_REQUEST_ERROR
   );
 });
 
-test("rejects when zipcode is not 5 characters", async () => {
+test("city: bad zipcode - rejects when zipcode is not 5 characters", async () => {
   const badRequest = { body: { zipcode: "12" } };
   await expect(addressService.city(badRequest)).rejects.toEqual(
     NULL_ADDRESS_REQUEST_ERROR
@@ -31,18 +31,15 @@ test("city - valid request, expect city result", async () => {
 }, 30000);
 
 test("count: null request - expect error returned", async () => {
-  let error: any;
   await addressService
     .count(null)
     .then(() => {
       fail("addressService.count: Unexpected Success");
     })
-    .catch((err) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error).toEqual(NULL_ADDRESS_REQUEST_ERROR);
     });
-
-  expect(error).toBeDefined();
-  expect(error).toEqual(NULL_ADDRESS_REQUEST_ERROR);
 });
 
 test("count: bad zipcode - expect count of 0", async () => {
@@ -58,18 +55,15 @@ test("count: bad zipcode - expect count of 0", async () => {
 }, 90000);
 
 test("distance: null request - expect error returned", async () => {
-  let error: any;
   await addressService
     .distance(null)
     .then(() => {
       fail("addressService.distance: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(NULL_ADDRESS_REQUEST_ERROR);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(NULL_ADDRESS_REQUEST_ERROR);
 }, 60000);
 
 test("distance: bad request - expect error returned", async () => {
@@ -92,28 +86,23 @@ test("distance: bad request - expect error returned", async () => {
             street2: "18C",
             city: "WEST HENRIETTA",
             state: "NY",
-            zipcode: "14586",
-          },
-        ],
-      },
+            zipcode: "14586"
+          }
+        ]
+      }
     })
     .then(() => {
       fail("addressService.distance: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(ADDRESS_NOT_FOUND_ERROR);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(ADDRESS_NOT_FOUND_ERROR);
 });
 
 test("distance: good request - expect distance returned", async () => {
   const expectedKilometers = 0.07437772516419937;
   const expectedMiles = 0.0462161755947715;
-
-  let actualKilometers;
-  let actualMiles;
 
   await addressService
     .distance({
@@ -133,24 +122,24 @@ test("distance: good request - expect distance returned", async () => {
             street2: "18C",
             city: "WEST HENRIETTA",
             state: "NY",
-            zipcode: "14586",
-          },
-        ],
-      },
+            zipcode: "14586"
+          }
+        ]
+      }
     })
     .then((distances) => {
-      actualKilometers = distances[0];
-      actualMiles = distances[1];
+      let actualKilometers = distances[0];
+      let actualMiles = distances[1];
+
+      expect(actualKilometers).toBeDefined();
+      expect(actualKilometers).toEqual(expectedKilometers);
+
+      expect(actualMiles).toBeDefined();
+      expect(actualMiles).toEqual(expectedMiles);
     })
     .catch((err) => {
       fail("addressService.distance: Unexpected Error - " + err.message);
     });
-
-  expect(actualKilometers).toBeDefined();
-  expect(actualKilometers).toEqual(expectedKilometers);
-
-  expect(actualMiles).toBeDefined();
-  expect(actualMiles).toEqual(expectedMiles);
 });
 
 /*
@@ -158,22 +147,18 @@ test("distance: good request - expect distance returned", async () => {
  *  negative test cases
  */
 test("addressService.exact: null request - expect error returned", async () => {
-  let error: any;
   await addressService
     .exact(null)
     .then(() => {
       fail("addressService.exact: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(NULL_ADDRESS_REQUEST_ERROR);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(NULL_ADDRESS_REQUEST_ERROR);
 });
 
 test("addressService.exact: missing parameter - expect error returned", async () => {
-  let error: any;
   await addressService
     .exact({
       body: {
@@ -187,16 +172,13 @@ test("addressService.exact: missing parameter - expect error returned", async ()
     .then(() => {
       fail("addressService.exact: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(QUERY_MISSING_PARAMETERS);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(QUERY_MISSING_PARAMETERS);
 });
 
 test("addressService.exact: incorrect data - expect error returned", async () => {
-  let error: any;
   await addressService
     .exact({
       body: {
@@ -211,12 +193,10 @@ test("addressService.exact: incorrect data - expect error returned", async () =>
     .then(() => {
       fail("addressService.exact: Unexpected Success");
     })
-    .catch((err: Error) => {
-      error = err;
+    .catch((error) => {
+      expect(error).toBeDefined();
+      expect(error.message).toEqual(ADDRESS_NOT_FOUND_ERROR);
     });
-
-  expect(error).toBeDefined();
-  expect(error.message).toEqual(ADDRESS_NOT_FOUND_ERROR);
 });
 
 /*

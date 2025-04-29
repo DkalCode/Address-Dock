@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-async-promise-executor */
 import { GOOGLE_API_TOKEN } from "../constants/environment-vars.constants";
-import { QUERY_NOT_PROVIDED } from "../constants/errors.constants";
+import {
+  QUERY_MISSING_PARAMETERS,
+  QUERY_NOT_PROVIDED,
+} from "../constants/errors.constants";
 import loggerService from "./logger.service";
-import addressService, { NULL_ADDRESS_REQUEST_ERROR } from "./address.service";
+import addressService from "./address.service";
+import Validator from "../utility/validator.utility";
 
 class ImageService {
   private static fetchUrl = "https://maps.googleapis.com/maps/api/streetview";
@@ -18,6 +24,20 @@ class ImageService {
         return;
       }
 
+      if (
+        Validator.isNullOrUndefined([
+          request.body.zipcode,
+          request.body.city,
+          request.body.state,
+          request.body.number,
+          request.body.street,
+        ])
+      ) {
+        loggerService.debug({ message: QUERY_MISSING_PARAMETERS }).flush();
+        reject(new Error(QUERY_MISSING_PARAMETERS));
+        return;
+      }
+
       addressService
         .exact(request)
         .then((response) => {
@@ -25,7 +45,7 @@ class ImageService {
             const params = new URLSearchParams({
               key: GOOGLE_API_TOKEN,
               location: response.formattedAddress,
-              size: "500x500",
+              size: request.body.size || "500x500",
             });
 
             fetch(ImageService.fetchUrl + `?${params}`, {
