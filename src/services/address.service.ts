@@ -129,7 +129,7 @@ class AddressService {
       }
 
       if (
-        Validator.isNotNullOrUndefined([
+        Validator.isNullOrUndefined([
           request.body.zipcode,
           request.body.city,
           request.body.state,
@@ -192,6 +192,18 @@ class AddressService {
         reject(new Error(NULL_ADDRESS_REQUEST_ERROR));
         return;
       }
+
+      if (
+        Validator.isNullOrUndefined([
+          addressRequest.body.addresses[0],
+          addressRequest.body.addresses[1]
+        ])
+      ) {
+        loggerService.debug({ message: QUERY_MISSING_PARAMETERS }).flush();
+        reject(new Error(QUERY_MISSING_PARAMETERS));
+        return;
+      }
+
       try {
         // Uses the addressRequest object to get the two exact addresses from the user provided request
         const address1 = await this.exact({
