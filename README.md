@@ -56,10 +56,9 @@ This project requires:
    ```
 3. Create .env file with the following
    ```
-  ENV=dev
-  SERVER_PORT=8080
-  GOOGLE_API_TOKEN=<GOOGLE_API_TOKEN>
-
+   ENV=dev
+   SERVER_PORT=8080
+   GOOGLE_API_TOKEN=<GOOGLE_API_TOKEN>
    ```
 4. Run the project with
    ```
