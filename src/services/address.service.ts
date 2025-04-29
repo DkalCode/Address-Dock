@@ -15,11 +15,16 @@ class AddressService {
   // Count number of addresses returned by the request to the API
   public async count(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
+      // Check if addressRequest is null and reject if it is
       if (!addressRequest) {
         reject(NULL_ADDRESS_REQUEST_ERROR);
         return;
       }
 
+      // Check if the addressRequest body has a page parameter included
+      // If it does, simply run the request once and return the count of the response
+      // If it doesn't, run the request in a loop until the response size is less than 1000
+      // and return the total count of all responses combined
       if (addressRequest.body.page != undefined) {
         this.request(addressRequest)
           .then((response: Array<Object>) => {
@@ -31,14 +36,22 @@ class AddressService {
             reject(err);
           });
       } else {
+        // Combined count of all addresses from all requests
         let count = 0;
+        // Current page number to be requested
         let page = 1;
+        // Response of the current request
         let responseSize = 1000;
+        // While the response size is 1000 (max size per request), continue to run requests, incrementing the page number each time
+        // Once the response returns a size less than 1000, we know we have all the addresses and can return the count
         // do :)
         while (responseSize === 1000) {
           addressRequest.body.page = page;
           await this.request(addressRequest)
             .then((response) => {
+              // Sets the new response size to the length of the response
+              // and increments the count by the length of the response
+              // Increments the page number for the next request
               responseSize = response.length;
               count += response.length;
               page++;
@@ -83,6 +96,8 @@ class AddressService {
     });
   }
 
+  // Fetch the address endpoint with the user provided request
+  // Resolves with the response from the API 
   public async request(addressRequest?: any): Promise<any> {
     return new Promise<any>(async (resolve, reject) => {
       fetch(AddressService.fetchUrl, {
@@ -166,8 +181,10 @@ class AddressService {
     });
   }
 
+  // Calculate the distance between two addresses using the Haversine formula
+  // This method takes in an addressRequest object that contains two addresses
+  // and returns the distance between them in kilometers and miles
   public async distance(addressRequest?: any): Promise<any> {
-    // Complete this
     return new Promise<any>(async (resolve, reject) => {
       if (!addressRequest || Object.keys(addressRequest.body).length === 0) {
         loggerService.debug({ message: NULL_ADDRESS_REQUEST_ERROR }).flush();
@@ -175,19 +192,18 @@ class AddressService {
         return;
       }
       try {
-        let newRequest = { body: addressRequest.body.addresses[0] };
+        // Uses the addressRequest object to get the two exact addresses from the user provided request
+        let address1 = await this.exact({ body: addressRequest.body.addresses[0] });
+        let address2 = await this.exact({ body: addressRequest.body.addresses[1] });
 
-        let address1 = await this.exact(newRequest);
-        let address2 = await this.exact({
-          body: addressRequest.body.addresses[1],
-        });
-
+        // Gets the distance between the two addresses using the exact addresses latitudes and longitudes
         this.getDistance(
           address1.latitude,
           address1.longitude,
           address2.latitude,
           address2.longitude
         )
+        // Resolves with the distance in kilometers and miles
           .then((disances) => resolve(disances))
           .catch((err) => {
             loggerService
@@ -208,6 +224,8 @@ class AddressService {
     });
   }
 
+  // Takes in two sets of latitude and longitude coordinates and returns the distance between them in kilometers and miles
+  // This method uses the Haversine formula to calculate the distance between two points on a sphere
   private async getDistance(
     lat1: number,
     lon1: number,
