@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-async-promise-executor */
-import { log } from "console";
 import { QUERY_MISSING_PARAMETERS } from "../constants/errors.constants";
 import { AddressResult } from "../types/types";
 import Validator from "../utility/validator.utility";

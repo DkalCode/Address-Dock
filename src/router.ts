@@ -1,6 +1,5 @@
 // Disabling the rule to allow for require imports
 /* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from "fs";
 import express, { NextFunction, Request, Response } from "express";
 import createHttpError, { HttpError } from "http-errors";
@@ -85,7 +84,7 @@ router.delete("*", (req: Request, res: Response, next: NextFunction) => {
 });
 
 function getEndpointControllerPath(req: Request): Promise<string> {
-  return new Promise<string>(async (resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
     const paths = req.baseUrl.split("/");
 
     const ext = ENV === "dev" ? "ts" : "js";
