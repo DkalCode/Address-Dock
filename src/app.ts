@@ -1,14 +1,7 @@
-import express, { NextFunction, Request, Response } from "express";
+import express from "express";
 import cors from "cors";
 
-import swaggerUi from "swagger-ui-express";
-import swaggerJsdoc from "swagger-jsdoc";
-import { swaggerOptions } from "../docs/swagger";
-import { ENV } from "./constants/environment-vars.constants";
-
-import createHttpError from "http-errors";
 import router from "./router";
-import loggerService from "./services/logger.service";
 
 const app = express();
 
@@ -27,12 +20,6 @@ app.get("/health", (_, res) => {
 });
 
 app.use(express.json());
-
-/* Swagger API Docs */
-if (ENV === "dev") {
-  const swaggerDocs = swaggerJsdoc(swaggerOptions);
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-}
 
 app.use("*", router);
 

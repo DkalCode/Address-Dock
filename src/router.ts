@@ -1,59 +1,103 @@
+// Disabling the rule to allow for require imports
+/* eslint-disable @typescript-eslint/no-require-imports */
 import fs from "fs";
 import express, { NextFunction, Request, Response } from "express";
-import createHttpError from "http-errors";
+import createHttpError, { HttpError } from "http-errors";
 import { ENV } from "./constants/environment-vars.constants";
 import loggerService from "./services/logger.service";
 
+// Creates an instance of the express router
 const router = express.Router();
 
+// GET, POST, PUT and DELETE routes for all endpoints
+// Routes will match with any endpoints
 router.get("*", (req: Request, res: Response, next: NextFunction) => {
-  validateEndpoint(req, res, () => {
-    require(getEndpointControllerPath(req)).getRoute(req, res, next);
-  });
+  getEndpointControllerPath(req)
+    .then(async (path) => {
+      require(path).getRoute(req, res, next);
+    })
+    .catch((err: HttpError) => {
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
+      res.status(err.status).send({
+        error: {
+          status: err.status,
+          message: err.message,
+        },
+      });
+    });
 });
 
 router.post("*", (req: Request, res: Response, next: NextFunction) => {
-  validateEndpoint(req, res, () => {
-    require(getEndpointControllerPath(req)).postRoute(req, res, next);
-  });
+  getEndpointControllerPath(req)
+    .then((path) => {
+      require(path).postRoute(req, res, next);
+    })
+    .catch((err: HttpError) => {
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
+      res.status(err.status).send({
+        error: {
+          status: err.status,
+          message: err.message,
+        },
+      });
+    });
 });
 
 router.put("*", (req: Request, res: Response, next: NextFunction) => {
-  validateEndpoint(req, res, () => {
-    require(getEndpointControllerPath(req)).putRoute(req, res, next);
-  });
+  getEndpointControllerPath(req)
+    .then((path) => {
+      require(path).putRoute(req, res, next);
+    })
+    .catch((err: HttpError) => {
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
+      res.status(err.status).send({
+        error: {
+          status: err.status,
+          message: err.message,
+        },
+      });
+    });
 });
 
 router.delete("*", (req: Request, res: Response, next: NextFunction) => {
-  validateEndpoint(req, res, () => {
-    require(getEndpointControllerPath(req)).deleteRoute(req, res, next);
-  });
+  getEndpointControllerPath(req)
+    .then((path) => {
+      require(path).deleteRoute(req, res, next);
+    })
+    .catch((err: HttpError) => {
+      loggerService
+        .debug({ message: err.message, path: req.originalUrl })
+        .flush();
+      res.status(err.status).send({
+        error: {
+          status: err.status,
+          message: err.message,
+        },
+      });
+    });
 });
 
-function getEndpointControllerPath(req: Request): string {
-  const paths = req.baseUrl.split("/");
+function getEndpointControllerPath(req: Request): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const paths = req.baseUrl.split("/");
 
-  const ext = ENV === "dev" ? "ts" : "js";
-  const route = `${__dirname}/endpoints/${paths[1]}.endpoint.${ext}`;
-  if (paths.length === 1 || !fs.existsSync(route) || paths[1] == "base") {
-    throw new createHttpError.BadRequest();
-  }
+    const ext = ENV === "dev" ? "ts" : "js";
 
-  return route;
-}
+    const route = `${__dirname}/endpoints/${paths[1]}.endpoint.${ext}`;
 
-function validateEndpoint(req: Request, res: Response, callback: () => void) {
-  try {
-    callback();
-  } catch (error) {
-    loggerService.debug({ message: "Not Found", path: req.path }).flush();
-    res.status(404).send({
-      error: {
-        status: 404,
-        message: "Not Found",
-      },
-    });
-  }
+    if (paths.length === 1 || !fs.existsSync(route) || paths[1] == "base") {
+      reject(new createHttpError.BadRequest());
+      return;
+    }
+
+    resolve(route);
+  });
 }
 
 export default router;
